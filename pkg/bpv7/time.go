@@ -7,6 +7,7 @@ type DTNTimestamp struct {
 	Time uint
 }
 
+// 4.2.7
 type CreationTimestamp struct {
 	BundleCreationTime DTNTimestamp
 	SequenceValue      DTNTimestamp
