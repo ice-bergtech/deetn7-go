@@ -1,9 +1,15 @@
 package bpv7
 
 type Bundle struct {
-	Primary BlockPrimary
-	Blocks  []Block // CBOR encoded
-	Payload BlockCanonical
+	_       struct{} `cbor:",toarray"`
+	Primary *BlockPrimary
+	Blocks  []*Block // CBOR encoded
+	Payload *BlockCanonical
+}
+
+func (bun Bundle) Verify() error {
+
+	return nil
 }
 
 // https://www.rfc-editor.org/rfc/rfc9171.html#name-block-processing-control-fl

@@ -1,7 +1,10 @@
 package bpv7
 
+import "github.com/fxamacker/cbor/v2"
+
 // https://www.rfc-editor.org/rfc/rfc9171.html#name-primary-bundle-block
 type BlockPrimary struct {
+	_ struct{} `cbor:",toarray"`
 	// Version:
 	// An unsigned integer value indicating the version of the Bundle Protocol that constructed this block.
 	// The present document describes BPv7.
@@ -32,11 +35,26 @@ type BlockPrimary struct {
 	Lifetime uint
 	// Fragment offset:
 	// If and only if the bundle processing control flags of this primary block indicate that the bundle is a fragment, fragment offset SHALL be present in the primary block. Fragment offset SHALL be represented as a CBOR unsigned integer indicating the offset from the start of the original ADU at which the bytes comprising the payload of this bundle were located.
-	FragmentOffset uint
+	FragmentOffset uint `cbor:",omitempty"`
 	// Total Application Data Unit Length:
 	// If and only if the bundle processing control flags of this primary block indicate that the bundle is a fragment, total application data unit length SHALL be present in the primary block. Total application data unit length SHALL be represented as a CBOR unsigned integer indicating the total length of the original ADU of which this bundle's payload is a part.
-	ADULength uint
+	ADULength uint `cbor:",omitempty"`
 	// CRC:
 	// A CRC SHALL be present in the primary block unless the bundle includes a BPSec Block Integrity Block [BPSEC] whose target is the primary block, in which case a CRC MAY be present in the primary block. The length and nature of the CRC SHALL be as indicated by the CRC type. The CRC SHALL be computed over the concatenation of all bytes (including CBOR "break" characters) of the primary block including the CRC field itself, which, for this purpose, SHALL be temporarily populated with all bytes set to zero.
-	CRC uint
+	CRC uint `cbor:",omitempty"`
+}
+
+func (block BlockPrimary) SetCRC() error {
+	block.CRC = 0
+	cbor, err := cbor.Marshal(block)
+	// crc32 encode and store
+
+}
+
+func GetCBOR(block BlockPrimary) ([]bytes, error) {
+	return cbor.Marshal(block)
+}
+
+func (block BlockPrimary) Verify() error {
+
 }
